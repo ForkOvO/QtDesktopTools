@@ -15,3 +15,7 @@
 ## 个人链接
 
 B站UP：[十_OvO](https://space.bilibili.com/387426555)
+
+## License
+
+[Apache 2.0 License](LICENSE)

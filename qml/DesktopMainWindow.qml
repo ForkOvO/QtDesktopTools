@@ -1,13 +1,11 @@
 
 import QtQuick
-import QtQuick.Shapes
 
 import ten.util.CacheManager
 
 Rectangle {
-    signal foldBtnClicked(bool toFold)
+    signal foldBtnClicked() // 折叠按钮点击信号
 
-    property bool isFolded: false // 窗口是否折叠
     property int pageIndex: -1 // 控制显示哪个页面
     property string theme: "dark" // 主题
     property int skinIndex: 0 // 主题索引
@@ -40,18 +38,14 @@ Rectangle {
         }
     }
 
-    MouseArea{ // 点击空白处
-        anchors.fill: parent
-        onClicked: {
-            sidebar.currentIndex = -1 // 关闭页面
-            searchBox.isFolded = true // 折叠搜索框
-        }
-    }
-
     Background { // 渐变背景
         anchors.fill: parent
         topLeft: root.theme === "dark" ? root.backLeftDark : root.backLeftLight
         bottomRight: root.theme === "dark" ? root.backRightDark : root.backRightLight
+        onBackgroundClicked: {
+            sidebar.currentIndex = -1 // 关闭页面
+            searchBox.isFolded = true // 折叠搜索框
+        }
     }
 
     Sidebar { // 侧边栏
@@ -75,15 +69,11 @@ Rectangle {
 
         MouseArea{
             anchors.fill: parent
-            onClicked: {
-                root.foldBtnClicked(!isFolded)
-                root.isFolded = !root.isFolded
-            }
+            onClicked: root.foldBtnClicked()
         }
     }
 
     Rectangle { // 页面
-        id: page
         color: "transparent"
         width: parent.width / 2
         height: parent.height / 2
@@ -120,7 +110,7 @@ Rectangle {
         }
     }
 
-    Image { // Github主页
+    Image { // Github
         id: github
         width: 25
         height: 25
@@ -130,11 +120,11 @@ Rectangle {
 
         MouseArea{
             anchors.fill: parent
-            onClicked: Qt.openUrlExternally("https://github.com/PhoenixOvO03")
+            onClicked: Qt.openUrlExternally("https://forkovo.github.io/")
         }
     }
 
-    Image { // B站主页
+    Image { // B站
         id: bilibili
         width: 25
         height: 25

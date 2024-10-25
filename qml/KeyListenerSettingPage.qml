@@ -6,15 +6,16 @@ import QtQuick.Controls.Basic
 import ten.util.CacheManager
 
 Item {
-    property var showKeyObject: null
-    property color backgroundColor: "#80808080"
-    property color keyColor: "#80C0C0C0"
-    property color textColor: "black"
-    property int colorIndex: 0
-    property int stayTime: 3000
-    property int locationIndex: 6
-    property string theme: "dark"
+    property var showKeyObject: null // 显示按键的窗口
+    property color backgroundColor: "#80808080" // 背景颜色
+    property color keyColor: "#80C0C0C0" // 按键颜色
+    property color textColor: "black" // 字体颜色
+    property int stayTime: 3000 // 按键停留时间
+    property int locationIndex: 6 // 按键位置
+    property string theme: "dark" // 主题
 
+    id: root
+    
     // 属性修改信号
     onBackgroundColorChanged: setProgressBar("backgroundColor", backgroundColor)
     onKeyColorChanged: setProgressBar("keyColor", keyColor)
@@ -24,42 +25,13 @@ Item {
 
     function setProgressBar(key, value){
         cacheManager.changeCache(key, value)
-        if (key === "stayTime"){
-            timeSlider.value = value
-            return
-        }
-        if (colorIndex === 0){
-            keyBtn.isChecked = false
-            textBtn.isChecked = false
-            redSlider.value = root.backgroundColor.r * 255
-            greenSlider.value = root.backgroundColor.g * 255
-            blueSlider.value = root.backgroundColor.b * 255
-            alphaSlider.value = root.backgroundColor.a * 255
-        }
-        if (colorIndex === 1){
-            backBtn.isChecked = false
-            textBtn.isChecked = false
-            redSlider.value = root.keyColor.r * 255
-            greenSlider.value = root.keyColor.g * 255
-            blueSlider.value = root.keyColor.b * 255
-            alphaSlider.value = root.keyColor.a * 255
-        }
-        if (colorIndex === 2){
-            backBtn.isChecked = false
-            keyBtn.isChecked = false
-            redSlider.value = root.textColor.r * 255
-            greenSlider.value = root.textColor.g * 255
-            blueSlider.value = root.textColor.b * 255
-            alphaSlider.value = root.textColor.a * 255
-        }
+        root.setShowKeyObjectStyle()
     }
 
     function setShowKeyObjectStyle(){
         if (root.showKeyObject !== null)
             root.showKeyObject.setStyle(root.backgroundColor, root.keyColor, root.textColor, root.stayTime, root.locationIndex)
     }
-
-    id: root
 
     CacheManager{
         id: cacheManager
@@ -76,7 +48,7 @@ Item {
     Column{
         spacing: 20
 
-        Row{ // 开关 位置
+        Row{ // 开关 位置 重置
             spacing: 10
 
             Rectangle{ // 按键预览及启动关闭
@@ -85,7 +57,6 @@ Item {
                 id: startRect
                 width: 120
                 height: 120
-                visible: true
                 radius: 30
                 color: root.backgroundColor
 
@@ -95,7 +66,6 @@ Item {
                     radius: 30
                     anchors.centerIn: parent
                     color: root.keyColor
-                    visible: true
 
                     Text {
                         text: startRect.isOpen ? "关闭" : "打开"
@@ -174,74 +144,12 @@ Item {
                     color: "#C0C0C0"
                 }
             }
-        }
-
-        Row{ // 设置类型
-            spacing: 10
-
-            CheckBtn{
-                id: backBtn
-                anchors.bottom: parent.bottom
-                width: 100
-                height: 50
-                labelText: "背景"
-                isChecked: true
-                onIsCheckedChanged: {
-                    if (isChecked){
-                        keyBtn.isChecked = false
-                        textBtn.isChecked = false
-                        root.colorIndex = 0
-                        redSlider.value = root.backgroundColor.r * 255
-                        greenSlider.value = root.backgroundColor.g * 255
-                        blueSlider.value = root.backgroundColor.b * 255
-                        alphaSlider.value = root.backgroundColor.a * 255
-                    }
-                }
-            }
-
-            CheckBtn{
-                id: keyBtn
-                anchors.bottom: parent.bottom
-                width: 100
-                height: 50
-                labelText: "按键"
-                onIsCheckedChanged: {
-                    if (isChecked){
-                        backBtn.isChecked = false
-                        textBtn.isChecked = false
-                        root.colorIndex = 1
-                        redSlider.value = root.keyColor.r * 255
-                        greenSlider.value = root.keyColor.g * 255
-                        blueSlider.value = root.keyColor.b * 255
-                        alphaSlider.value = root.keyColor.a * 255
-                    }
-                }
-            }
-
-            CheckBtn{
-                id: textBtn
-                anchors.bottom: parent.bottom
-                width: 100
-                height: 50
-                labelText: "文字"
-                onIsCheckedChanged: {
-                    if (isChecked){
-                        backBtn.isChecked = false
-                        keyBtn.isChecked = false
-                        root.colorIndex = 2
-                        redSlider.value = root.textColor.r * 255
-                        greenSlider.value = root.textColor.g * 255
-                        blueSlider.value = root.textColor.b * 255
-                        alphaSlider.value = root.textColor.a * 255
-                    }
-                }
-            }
 
             Button{ // 重置
                 anchors.bottom: parent.bottom
-                width: 100
-                height: 50
-                text: "重置"
+                width: 50
+                height: 25
+                text: "reset"
                 background: Rectangle{
                     color: "red"
                     border.color: Qt.lighter(color)
@@ -251,224 +159,189 @@ Item {
                     root.backgroundColor = "#80808080"
                     root.keyColor = "#80C0C0C0"
                     root.textColor = "black"
-                    timeSlider.value = 3000
+                    root.stayTime = 3000
                     locationGrid.currentIndex = 6
                     root.locationIndex = 6
-                    if (root.colorIndex === 0){
-                        redSlider.value = root.backgroundColor.r * 255
-                        greenSlider.value = root.backgroundColor.g * 255
-                        blueSlider.value = root.backgroundColor.b * 255
-                        alphaSlider.value = root.backgroundColor.a * 255
-                    }else if (root.colorIndex === 1){
-                        redSlider.value = root.keyColor.r * 255
-                        greenSlider.value = root.keyColor.g * 255
-                        blueSlider.value = root.keyColor.b * 255
-                        alphaSlider.value = root.keyColor.a * 255
-                    }else if (root.colorIndex === 2){
-                        redSlider.value = root.textColor.r * 255
-                        greenSlider.value = root.textColor.g * 255
-                        blueSlider.value = root.textColor.b * 255
-                        alphaSlider.value = root.textColor.a * 255
-                    }
-                    root.setShowKeyObjectStyle()
                 }
             }
         }
 
-        Row{ // R
+        Row{ // 背景
             spacing: 10
-
-            SliderProgress{
-                id: redSlider
-                width: 400
-                height: 20
-                sliderColor: "red"
-                maxVlaue: 255
-                value: root.backgroundColor.r * 255
-                onValueChanged: {
-                    redEdit.content = value
-                    if (root.colorIndex === 0) root.backgroundColor.r = value / 255
-                    else if (root.colorIndex === 1) root.keyColor.r = value / 255
-                    else if (root.colorIndex === 2) root.textColor.r = value / 255
-                    root.setShowKeyObjectStyle()
-                }
-            }
 
             Text {
-                font.pixelSize: 15
-                color: "red"
-                text: qsTr("R")
+                font.pixelSize: 30
+                color: root.theme === "dark" ? "white" : "black"
+                text: "背景"
             }
 
-            LineEdit{
-                id: redEdit
-                width: 50
-                height: 20
-                content: "0"
-                allColor: root.theme === "dark" ? "#80ffffff" : "#80000000"
-                onContentChanged: {
-                    if (content === "") content = "0"
-                    if (content > 255) content = 255
-                    else if (content < 0) content = 0
-                    redSlider.value = content
+            Button{
+                width: 40
+                height: 40
+                background: Rectangle{
+                    id: backgroundColorRect
+                    radius: 10
+                    color: root.backgroundColor
+                    border.color: root.theme === "dark" ? "white" : "black"
+                }
+                onClicked: root.backgroundColor = backgroundColorRect.color
+            }
+
+            Rectangle{
+                width: 200
+                height: 40
+                radius: height / 2
+                color: "transparent"
+                border.color: root.theme === "dark" ? "white" : "black"
+
+                TextInput{
+                    anchors.fill: parent
+                    font.pixelSize: height * 0.5
+                    font.family: "华文彩云"
+                    color: root.theme === "dark" ? "white" : "black"
+                    verticalAlignment: Qt.AlignVCenter
+                    horizontalAlignment: Qt.AlignHCenter
+                    clip: true
+                    text: root.backgroundColor
+                    onTextChanged: backgroundColorRect.color = text
                 }
             }
         }
 
-        Row{ // G
+        Row{ // 按钮
             spacing: 10
-
-            SliderProgress{
-                id: greenSlider
-                width: 400
-                height: 20
-                sliderColor: "green"
-                maxVlaue: 255
-                value: root.backgroundColor.g * 255
-                onValueChanged: {
-                    greenEdit.content = value
-                    if (root.colorIndex === 0) root.backgroundColor.g = value / 255
-                    else if (root.colorIndex === 1) root.keyColor.g = value / 255
-                    else if (root.colorIndex === 2) root.textColor.g = value / 255
-                    root.setShowKeyObjectStyle()
-                }
-            }
 
             Text {
-                font.pixelSize: 15
-                color: "green"
-                text: qsTr("G")
+                font.pixelSize: 30
+                color: root.theme === "dark" ? "white" : "black"
+                text: "按钮"
             }
 
-            LineEdit{
-                id: greenEdit
-                width: 50
-                height: 20
-                content: "0"
-                allColor: root.theme === "dark" ? "#80ffffff" : "#80000000"
-                onContentChanged: {
-                    if (content === "") content = "0"
-                    if (content > 255) content = 255
-                    else if (content < 0) content = 0
-                    greenSlider.value = content
+            Button{
+                width: 40
+                height: 40
+                background: Rectangle{
+                    id: keyColorRect
+                    radius: 10
+                    color: root.keyColor
+                    border.color: root.theme === "dark" ? "white" : "black"
+                }
+                onClicked: root.keyColor = keyColorRect.color
+            }
+
+            Rectangle{
+                width: 200
+                height: 40
+                radius: height / 2
+                color: "transparent"
+                border.color: root.theme === "dark" ? "white" : "black"
+
+                TextInput{
+                    anchors.fill: parent
+                    font.pixelSize: height * 0.5
+                    font.family: "华文彩云"
+                    color: root.theme === "dark" ? "white" : "black"
+                    verticalAlignment: Qt.AlignVCenter
+                    horizontalAlignment: Qt.AlignHCenter
+                    clip: true
+                    text: root.keyColor
+                    onTextChanged: keyColorRect.color = text
                 }
             }
         }
 
-        Row{ // B
+        Row{ // 文字
             spacing: 10
-
-            SliderProgress{
-                id: blueSlider
-                width: 400
-                height: 20
-                sliderColor: "blue"
-                maxVlaue: 255
-                value: root.backgroundColor.b * 255
-                onValueChanged: {
-                    blueEdit.content = value
-                    if (root.colorIndex === 0) root.backgroundColor.b = value / 255
-                    else if (root.colorIndex === 1) root.keyColor.b = value / 255
-                    else if (root.colorIndex === 2) root.textColor.b = value / 255
-                    root.setShowKeyObjectStyle()
-                }
-            }
 
             Text {
-                font.pixelSize: 15
-                color: "blue"
-                text: qsTr("B")
+                font.pixelSize: 30
+                color: root.theme === "dark" ? "white" : "black"
+                text: "文字"
             }
 
-            LineEdit{
-                id: blueEdit
-                width: 50
-                height: 20
-                content: "0"
-                allColor: root.theme === "dark" ? "#80ffffff" : "#80000000"
-                onContentChanged: {
-                    if (content === "") content = "0"
-                    if (content > 255) content = 255
-                    else if (content < 0) content = 0
-                    blueSlider.value = content
+            Button{
+                width: 40
+                height: 40
+                background: Rectangle{
+                    id: textColorRect
+                    radius: 10
+                    color: root.textColor
+                    border.color: root.theme === "dark" ? "white" : "black"
+                }
+                onClicked: root.textColor = textColorRect.color
+            }
+
+            Rectangle{
+                width: 200
+                height: 40
+                radius: height / 2
+                color: "transparent"
+                border.color: root.theme === "dark" ? "white" : "black"
+
+                TextInput{
+                    anchors.fill: parent
+                    font.pixelSize: height * 0.5
+                    font.family: "华文彩云"
+                    color: root.theme === "dark" ? "white" : "black"
+                    verticalAlignment: Qt.AlignVCenter
+                    horizontalAlignment: Qt.AlignHCenter
+                    clip: true
+                    text: root.textColor
+                    onTextChanged: textColorRect.color = text
                 }
             }
         }
 
-        Row{ // A
+        Row{ // 时间
             spacing: 10
-
-            SliderProgress{
-                id: alphaSlider
-                width: 400
-                height: 20
-                sliderColor: "yellow"
-                maxVlaue: 255
-                value: root.backgroundColor.a * 255
-                onValueChanged: {
-                    alphaEdit.content = value
-                    if (root.colorIndex === 0) root.backgroundColor.a = value / 255
-                    else if (root.colorIndex === 1) root.keyColor.a = value / 255
-                    else if (root.colorIndex === 2) root.textColor.a = value / 255
-                    root.setShowKeyObjectStyle()
-                }
-            }
 
             Text {
-                font.pixelSize: 15
-                color: "yellow"
-                text: qsTr("A")
+                font.pixelSize: 30
+                color: root.theme === "dark" ? "white" : "black"
+                text: "时间"
             }
 
-            LineEdit{
-                id: alphaEdit
-                width: 50
-                height: 20
-                content: "0"
-                allColor: root.theme === "dark" ? "#80ffffff" : "#80000000"
-                onContentChanged: {
-                    if (content === "") content = "0"
-                    if (content > 255) content = 255
-                    else if (content < 0) content = 0
-                    alphaSlider.value = content
-                }
-            }
-        }
-
-        Row{ // T
-            spacing: 10
-
-            SliderProgress{
+            Slider{
                 id: timeSlider
-                width: 400
-                height: 20
-                sliderColor: "#00ffff"
-                maxVlaue: 5000
+                width: 300
+                height: 40
+                from: 1000
+                to: 5000
+                stepSize: 1000
+                snapMode: Slider.SnapAlways
                 value: root.stayTime
-                onValueChanged: {
-                    timeEdit.content = value
-                    root.stayTime = value
-                    root.setShowKeyObjectStyle()
+                onValueChanged: root.stayTime = value
+
+                background: Rectangle {
+                    width: timeSlider.availableWidth
+                    height: 40
+                    radius: 5
+                    color: "gray"
+                    border.color: "black"
+
+                    Rectangle {
+                        width: timeSlider.visualPosition * parent.width
+                        height: parent.height
+                        color: "white"
+                        border.color: "black"
+                        radius: 5
+                    }
                 }
-            }
 
-            Text {
-                font.pixelSize: 15
-                color: "#00ffff"
-                text: qsTr("T")
-            }
+                handle: Rectangle {
+                    x: timeSlider.visualPosition * (timeSlider.availableWidth - width)
+                    width: 40
+                    height: 40
+                    radius: 5
+                    color: timeSlider.pressed ? "#D0D0D0" : "white"
+                    border.color: "black"
 
-            LineEdit{
-                id: timeEdit
-                width: 50
-                height: 20
-                content: timeSlider.value
-                allColor: root.theme === "dark" ? "#80ffffff" : "#80000000"
-                onContentChanged: {
-                    if (content === "") content = "0"
-                    if (content > 5000) content = 5000
-                    else if (content < 0) content = 0
-                    timeSlider.value = content
+                    Text {
+                        anchors.centerIn: parent
+                        font.pixelSize: 10
+                        color: "black"
+                        text: timeSlider.value / 1000 + "s"
+                    }
                 }
             }
         }

@@ -3,6 +3,8 @@ import QtQuick
 import QtQuick.Shapes
 
 Shape {
+    signal backgroundClicked()
+
     property color topLeft: "#456EA6"
     property color bottomRight: "#8A5A91"
 
@@ -21,5 +23,10 @@ Shape {
         PathLine { x: root.width; y: root.height }
         PathLine { x: 0; y: root.height }
         PathLine { x: 0; y: 0 }
+    }
+
+    MouseArea{
+        anchors.fill: parent
+        onClicked: root.backgroundClicked()
     }
 }

@@ -6,6 +6,7 @@
 class QPropertyAnimation;
 class QQuickWidget;
 class QSystemTrayIcon;
+class QPushButton;
 
 class DesktopWidget : public QWidget
 {
@@ -16,17 +17,16 @@ public:
     void trayIconInit(); // 系统托盘初始化
 
 private slots:
-    void onFoldBtnClicked(bool toFold); // 折叠按钮点击事件
+    void onFoldWindow(); // 折叠窗口
+    void onFullWindow(); // 展开窗口
 
 protected:
     // 右键移动折叠浮窗
     void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     bool m_isFold = false; // 是否折叠
-    bool m_moveEnabled = false; // 是否可以移动
     QPoint m_startPos; // 鼠标按下时的位置
     QPropertyAnimation* m_foldAnimation; // 折叠窗口动画
     QRect m_foldRect; // 折叠窗口的位置和大小
@@ -34,6 +34,7 @@ private:
 
     QQuickWidget* m_quickWidget; // QML主界面
     QSystemTrayIcon* m_trayIcon; // 系统托盘
+    QPushButton* m_fullButton; // 展开按钮
 };
 
 #endif // DESKTOPWIDGET_H

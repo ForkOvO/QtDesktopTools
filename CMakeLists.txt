@@ -36,6 +36,7 @@ qt_add_executable(QtDesktopTools
     res.qrc
     qml.qrc
     cache.qrc
+    res/icon.rc
 )
 
 target_link_libraries(QtDesktopTools PRIVATE
